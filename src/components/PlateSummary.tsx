@@ -2,6 +2,8 @@ import { Grid, Stack, Chip, Badge } from "@mui/material";
 import { usePlates } from "../contexts/PlateContext";
 import { sortNumbersInverse } from "../utils/helpers";
 
+// TODO: Improve this
+
 const getPlates = (
   wt: number,
   available: number[],
