@@ -1,23 +1,29 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
-import { useEffect } from "react";
-import { useBar } from "../contexts/BarContext";
-import { Pad } from "./Pad";
+import { useBarbells } from "../../contexts/BarContext";
+import { Pad } from "../Pad";
 
 type Props = {
   selected: number;
   onSelect: (selected: number) => void;
 };
 
-export const BarPicker = (props: Props) => {
+export const BarbellPicker = (props: Props) => {
   const { selected, onSelect } = props;
-  const [available] = useBar();
+  const [available] = useBarbells();
 
-  useEffect(() => {
-    if (available.includes(selected) || available.length === 0) {
-      return;
-    }
-    onSelect(available[0]);
-  }, [selected]);
+  if (available.length === 0) {
+    return (
+      <>
+        <Pad size={3} />
+        <Grid item xs={6}>
+          ¯\_(ツ)_/¯
+        </Grid>
+        <Pad size={3} />
+      </>
+    );
+  }
+
+  const safeSelected = available.includes(selected) ? selected : available[0];
 
   return (
     <>
@@ -28,7 +34,7 @@ export const BarPicker = (props: Props) => {
           <Select
             label="Bar weight"
             color="primary"
-            value={selected}
+            value={safeSelected}
             onChange={(e) => onSelect(e.target.value as number)}
           >
             {available.map((w) => (

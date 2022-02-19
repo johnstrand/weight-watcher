@@ -1,7 +1,12 @@
 import { Grid, Stack, Chip, Badge } from "@mui/material";
+import { usePlates } from "../contexts/PlateContext";
+import { sortNumbersInverse } from "../utils/helpers";
 
-const getWeights = (wt: number, displayZero: boolean = false) => {
-  const available = [20, 15, 10, 5, 2.5, 1.25];
+const getPlates = (
+  wt: number,
+  available: number[],
+  displayZero: boolean = false
+) => {
   const weights: [weight: number, count: number][] = [];
   for (let index = 0; index < available.length; index++) {
     const current = available[index];
@@ -20,8 +25,12 @@ type Props = {
   plateWeight: number;
 };
 
-export const WeightSelection = (props: Props) => {
-  const weights = getWeights(props.plateWeight);
+export const PlateSummary = (props: Props) => {
+  const [available] = usePlates();
+  const weights = getPlates(
+    props.plateWeight,
+    available.sort(sortNumbersInverse)
+  );
   return (
     <Grid item xs={12} textAlign="center">
       <Stack direction="row" spacing={2} justifyContent="space-evenly">

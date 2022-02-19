@@ -1,11 +1,12 @@
-import AlbumIcon from "@mui/icons-material/Album";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { useToggle } from "../utils/hooks";
-import { BarEditor } from "./BarEditor";
+import { BarbellEditor } from "./Barbell/BarbellEditor";
+import { FitnessCenterIcon, AlbumIcon } from "./Icons";
+import { PlateEditor } from "./Plate/PlateEditor";
 
 export const SettingsMenu = () => {
   const [barEditorVisible, toggleBarEditor] = useToggle(false);
+  const [plateEditorVisible, togglePlateEditor] = useToggle(false);
   return (
     <>
       <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}>
@@ -15,10 +16,15 @@ export const SettingsMenu = () => {
             icon={<FitnessCenterIcon />}
             onClick={toggleBarEditor}
           />
-          <BottomNavigationAction label="Edit weights" icon={<AlbumIcon />} />
+          <BottomNavigationAction
+            label="Edit weights"
+            icon={<AlbumIcon />}
+            onClick={togglePlateEditor}
+          />
         </BottomNavigation>
       </Paper>
-      <BarEditor visible={barEditorVisible} toggle={toggleBarEditor} />
+      <BarbellEditor visible={barEditorVisible} toggle={toggleBarEditor} />
+      <PlateEditor visible={plateEditorVisible} toggle={togglePlateEditor} />
     </>
   );
 };

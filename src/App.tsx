@@ -1,13 +1,10 @@
 import { ThemeProvider } from "@emotion/react";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { useState } from "react";
-import { BarPicker } from "./components/BarPicker";
+import { useEffect, useState } from "react";
+import { BarbellPicker } from "./components/Barbell/BarbellPicker";
 import { Spacer } from "./components/Spacer";
 import { PlateInput } from "./components/PlateInput";
 import { Total } from "./components/Total";
-import { WeightSelection } from "./components/WeightSelection";
-import { BarProvider } from "./contexts/BarContext";
+import { PlateSummary } from "./components/PlateSummary";
 import {
   Button,
   createTheme,
@@ -17,6 +14,8 @@ import {
   Paper,
 } from "@mui/material";
 import { SettingsMenu } from "./components/SettingsMenu";
+import { usePlates } from "./contexts/PlateContext";
+import { AddIcon, ArrowDownwardIcon } from "./components/Icons";
 
 const theme = createTheme({
   palette: {
@@ -27,45 +26,49 @@ const theme = createTheme({
 function App() {
   const [requestedWeight, setRequestedWeight] = useState(0);
   const [barWeight, setBarWeight] = useState(20);
+  const [plates] = usePlates();
+  const increment = plates[plates.length - 1];
+
+  useEffect(() => {
+    setRequestedWeight(0);
+  }, [plates]);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BarProvider>
-        <Paper sx={{ height: "98vh" }} elevation={5}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} textAlign="center">
-              <h1>Weight Picker</h1>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider>Bar and desired weight</Divider>
-            </Grid>
-            <BarPicker selected={barWeight} onSelect={setBarWeight} />
-            <Spacer content={<AddIcon />} />
-            <PlateInput
-              increment={1.25}
-              selectedWeight={requestedWeight}
-              onChange={setRequestedWeight}
-            />
-            <Spacer content={<ArrowDownwardIcon />} />
-            <Total barWeight={barWeight} plateWeight={requestedWeight} />
-            <Spacer
-              content={
-                <Button
-                  size="large"
-                  color="error"
-                  onClick={() => setRequestedWeight(0)}
-                >
-                  Reset
-                </Button>
-              }
-            />
-            <Spacer content={<Divider>Weights (per side)</Divider>} />
-            <WeightSelection plateWeight={requestedWeight} />
+      <Paper sx={{ height: "98vh" }} elevation={5}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} textAlign="center">
+            <h1>Weight Picker</h1>
           </Grid>
-        </Paper>
-        <SettingsMenu />
-      </BarProvider>
+          <Grid item xs={12}>
+            <Divider>Bar and desired weight</Divider>
+          </Grid>
+          <BarbellPicker selected={barWeight} onSelect={setBarWeight} />
+          <Spacer content={<AddIcon />} />
+          <PlateInput
+            increment={increment}
+            selectedWeight={requestedWeight}
+            onChange={setRequestedWeight}
+          />
+          <Spacer content={<ArrowDownwardIcon />} />
+          <Total barWeight={barWeight} plateWeight={requestedWeight} />
+          <Spacer
+            content={
+              <Button
+                size="large"
+                color="error"
+                onClick={() => setRequestedWeight(0)}
+              >
+                Reset
+              </Button>
+            }
+          />
+          <Spacer content={<Divider>Weights (per side)</Divider>} />
+          <PlateSummary plateWeight={requestedWeight} />
+        </Grid>
+      </Paper>
+      <SettingsMenu />
     </ThemeProvider>
   );
 }
