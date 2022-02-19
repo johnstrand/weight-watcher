@@ -14,7 +14,9 @@ const readBarSettings = () => {
     if (
       !Array.isArray(parsedSettings) ||
       parsedSettings.length === 0 ||
-      parsedSettings.some((item) => typeof item !== "number")
+      parsedSettings.some(
+        (item) => typeof item !== "number" || item <= 0 || item > 100
+      )
     ) {
       throw null;
     }
@@ -25,8 +27,17 @@ const readBarSettings = () => {
 };
 
 export const BarProvider: React.FC = ({ children }) => {
-  const state = useState<number[]>(readBarSettings());
-  return <BarContext.Provider value={state}>{children}</BarContext.Provider>;
+  const [barbells, setBarbells] = useState<number[]>(readBarSettings());
+  const persistBarbells = (list: number[]) => {
+    localStorage.setItem("__bars", JSON.stringify(list));
+    setBarbells(list.sort((a, b) => a - b));
+  };
+
+  return (
+    <BarContext.Provider value={[barbells, persistBarbells]}>
+      {children}
+    </BarContext.Provider>
+  );
 };
 
 export const useBar = () => {

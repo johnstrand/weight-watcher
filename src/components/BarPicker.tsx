@@ -1,4 +1,5 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { useEffect } from "react";
 import { useBar } from "../contexts/BarContext";
 import { Pad } from "./Pad";
 
@@ -10,6 +11,14 @@ type Props = {
 export const BarPicker = (props: Props) => {
   const { selected, onSelect } = props;
   const [available] = useBar();
+
+  useEffect(() => {
+    if (available.includes(selected) || available.length === 0) {
+      return;
+    }
+    onSelect(available[0]);
+  }, [selected]);
+
   return (
     <>
       <Pad size={3} />
